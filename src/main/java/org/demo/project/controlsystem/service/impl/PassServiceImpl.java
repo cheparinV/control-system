@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+/**
+ * Реализация сервиса пропусков
+ */
 @Service
 public class PassServiceImpl implements PassService {
 
@@ -27,9 +30,12 @@ public class PassServiceImpl implements PassService {
         this.config = config;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Transactional
-    public boolean userAction(Long userId, Long roomId, Boolean entrance) {
-        if (!isApplicableRoomId(userId, roomId)) {
+    public boolean passUser(Long userId, Long roomId, Boolean entrance) {
+        if (!isValidRoomAndUser(userId, roomId)) {
             LOG.info(String.format("Access denied, user: %d, room: %d", userId, roomId));
             return false;
         }
@@ -40,10 +46,22 @@ public class PassServiceImpl implements PassService {
         }
     }
 
-    private boolean isApplicableRoomId(Long userId, Long roomId) {
+    /**
+     * Валидация соответствия пользователя и комнаты
+     *
+     * @param userId идентификатор пользователя
+     * @param roomId идентификатор комнаты
+     */
+    private boolean isValidRoomAndUser(Long userId, Long roomId) {
         return roomId % userId == 0 && roomId <= config.getRoomsMax() && userId <= config.getUsersMax();
     }
 
+    /**
+     * Пропуск для входа пользователя
+     *
+     * @param userId идентификатор пользователя
+     * @param roomId идентификатор комнаты
+     */
     private synchronized boolean enterUser(Long userId, Long roomId) {
         if (passRepository.findPassByUserId(userId) == null) {
             passRepository.save(new Pass(roomId, userId));
@@ -55,6 +73,12 @@ public class PassServiceImpl implements PassService {
         return false;
     }
 
+    /**
+     * Пропуск для выхода пользователя
+     *
+     * @param userId идентификатор пользователя
+     * @param roomId идентификатор комнаты
+     */
     private synchronized boolean exitUser(Long userId, Long roomId) {
         final Optional<Pass> passByUserId = Optional.ofNullable(passRepository.findPassByUserId(userId));
         if (passByUserId.map(Pass::getRoomId)

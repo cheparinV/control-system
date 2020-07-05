@@ -2,11 +2,16 @@ package org.demo.project.controlsystem.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * Объект с конфигурируемыми переменными
+ */
 @ConfigurationProperties("access.system")
 public class ServiceConfiguration {
 
+    /** Максимальное количество пользователей */
     private Long usersMax;
 
+    /** Максимальное количество комнат */
     private Long roomsMax;
 
     public Long getUsersMax() {

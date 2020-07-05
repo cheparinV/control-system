@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+/**
+ * Api для запросов пропусков
+ */
 @RestController
 public class PassController {
 
@@ -25,7 +28,7 @@ public class PassController {
     public Mono<ResponseEntity<Object>> check(@RequestParam("roomId") Long roomId,
                                               @RequestParam("entrance") Boolean entrance,
                                               @RequestParam("keyId") Long keyId) {
-        final Mono<ResponseEntity<Object>> responseEntityMono = Mono.just(passService.userAction(keyId, roomId, entrance))
+        final Mono<ResponseEntity<Object>> responseEntityMono = Mono.just(passService.passUser(keyId, roomId, entrance))
                 .filter(re -> re)
                 .map(re -> ResponseEntity.ok().build())
                 .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.FORBIDDEN).build()));

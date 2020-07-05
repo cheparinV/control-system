@@ -40,24 +40,24 @@ public class PassServiceTest {
 
     @Test
     public void testEnterIntoRoom() {
-        assertTrue(passService.userAction(2L, 4L, true));
+        assertTrue(passService.passUser(2L, 4L, true));
     }
 
     @Test
     public void testExitFromRoom() {
-        assertTrue(passService.userAction(2L, 4L, true));
-        assertTrue(passService.userAction(2L, 4L, false));
+        assertTrue(passService.passUser(2L, 4L, true));
+        assertTrue(passService.passUser(2L, 4L, false));
     }
 
     @Test
     public void testAccessDenied() {
-        assertFalse(passService.userAction(3L, 4L, true));
+        assertFalse(passService.passUser(3L, 4L, true));
     }
 
     @Test
     public void testEnterIntoRoomWhenInRoom() {
-        assertTrue(passService.userAction(2L, 4L, true));
-        assertFalse(passService.userAction(2L, 8L, true));
+        assertTrue(passService.passUser(2L, 4L, true));
+        assertFalse(passService.passUser(2L, 8L, true));
     }
 
     @AfterEach
